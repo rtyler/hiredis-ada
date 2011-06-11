@@ -7,18 +7,15 @@ GPRCLEAN=gprclean
 TESTRUNNER=textrunner
 
 
-debug: pre hiredis_lib
+debug: pre
 	$(GPRBUILD) -p hiredis.gpr -Xmode=debug
 
-release: pre hiredis_lib
+release: pre
 	$(GPRBUILD) -p hiredis.gpr -Xmode=release
 
 pre:
 	mkdir -p build
 	mkdir -p obj
-
-hiredis_lib:
-	$(MAKE) -C hiredis
 
 syntax: pre
 	gnatmake -gnatc -gnat05 -P hiredis.gpr
