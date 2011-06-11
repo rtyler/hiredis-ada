@@ -7,8 +7,11 @@ GPRCLEAN=gprclean
 TESTRUNNER=textrunner
 
 
-all: pre hiredis_lib
-	$(GPRBUILD) -p hiredis.gpr
+debug: pre hiredis_lib
+	$(GPRBUILD) -p hiredis.gpr -Xmode=debug
+
+release: pre hiredis_lib
+	$(GPRBUILD) -p hiredis.gpr -Xmode=release
 
 pre:
 	mkdir -p build
