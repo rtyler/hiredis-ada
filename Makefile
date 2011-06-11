@@ -20,9 +20,8 @@ pre:
 syntax: pre
 	gnatmake -gnatc -gnat05 -P hiredis.gpr
 
-test: lib
-	$(GPRBUILD) -p test/unit.gpr
-	./$(TESTRUNNER)
+test: debug
+	sh tests/run.sh
 
 clean: pre
 	$(GPRCLEAN) hiredis.gpr
