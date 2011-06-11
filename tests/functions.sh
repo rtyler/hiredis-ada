@@ -8,6 +8,14 @@ greenout() {
     echo "$(tput bold)$(tput setaf 2)>> $@$(tput sgr0)"
 }
 
+yellowout() {
+    echo "$(tput bold)$(tput setaf 3)*** $@ ***$(tput sgr0)"
+}
+
+blueout() {
+    echo "$(tput bold)$(tput setaf 4)*** $@ ***$(tput sgr0)"
+}
+
 locate_redis() {
     REDIS=$(which redis-server)
 
@@ -19,4 +27,18 @@ locate_redis() {
     fi
 
     export REDIS=$REDIS
+}
+
+not_implemented() {
+    echo
+    yellowout "NOT IMPLEMENTED"
+    echo
+    exit 2
+}
+
+skip_test() {
+    echo
+    blueout "SKIPPING"
+    echo
+    exit 3
 }
