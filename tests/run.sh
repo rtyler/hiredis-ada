@@ -6,6 +6,7 @@ greenout "Preparing to start integration tests"
 
 locate_redis
 
+echo "---------------------------------------"
 
 SKIPFILE="testresults.$$.skip.log"
 FAILFILE="testresults.$$.fail.log"
