@@ -15,17 +15,18 @@ release: pre
 
 pre:
 	mkdir -p build
-	mkdir -p obj
+	mkdir -p obj/tests
 
 syntax: pre
 	gnatmake -gnatc -gnat05 -P hiredis.gpr
 
-test: debug
+test: pre debug
+	sh tests/build.sh
 	sh tests/run.sh
 
 clean: pre
 	$(GPRCLEAN) hiredis.gpr
 	$(MAKE) -C hiredis clean
 	rm -rf build obj
-	rm -f *.so*
+	rm -f *.so* *.ali*
 
