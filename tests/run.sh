@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Set this so our test scripts can properly pick up our shared lib
+export LD_LIBRARY_PATH=`pwd`/build:$LD_LIBRARY_PATH
+
 source "tests/functions.sh"
 
 greenout "Preparing to start integration tests"
