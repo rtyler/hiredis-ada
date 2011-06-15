@@ -10,9 +10,14 @@ package Redis is
     use Interfaces.C;
     use System;
 
-    procedure Set (Key : in String; Value : in String);
+    subtype Port_Type is Natural range 1 .. 65536;
 
+    type Connection is tagged private;
 
+    procedure Set (C : Connection; Key : in String; Value : in String);
+
+    procedure Connect (Host : in String; Port : in Port_Type; Conn : out Connection);
+private
     package Hiredis is
         REDIS_ERR : constant := -1;
         REDIS_OK : constant := 0;
@@ -133,33 +138,33 @@ package Redis is
             errstr : aliased Redis_Error_Str;
             fd : aliased Int;
             flags : aliased Int;
-            obuf : Interfaces.C.Strings.chars_ptr;
+            obuf : Interfaces.C.Strings.Chars_Ptr;
             reader : access redisReader;
         end record;
         pragma Convention (C_Pass_By_Copy, redisContext);
 
 
-        function redisConnect (Host_Mask : Interfaces.C.Strings.chars_ptr;
+        function redisConnect (Host_Mask : Interfaces.C.Strings.Chars_Ptr;
                                Port : Int) return access redisContext;
         pragma Import (C, redisConnect, "redisConnect");
 
-        function redisConnectWithTimeout (Host_Mask : Interfaces.C.Strings.chars_ptr;
+        function redisConnectWithTimeout (Host_Mask : Interfaces.C.Strings.Chars_Ptr;
                                           Port : Int;
                                           Timeout : Timeval) return access redisContext;
         pragma Import (C, redisConnectWithTimeout, "redisConnectWithTimeout");
 
-        function redisConnectNonBlock (Host_Mask : Interfaces.C.Strings.chars_ptr;
+        function redisConnectNonBlock (Host_Mask : Interfaces.C.Strings.Chars_Ptr;
                                        Timeout : Int) return access redisContext;
         pragma Import (C, redisConnectNonBlock, "redisConnectNonBlock");
 
-        function redisConnectUnix (Unix_Sock : Interfaces.C.Strings.chars_ptr) return access redisContext;
+        function redisConnectUnix (Unix_Sock : Interfaces.C.Strings.Chars_Ptr) return access redisContext;
         pragma Import (C, redisConnectUnix, "redisConnectUnix");
 
-        function redisConnectUnixWithTimeout (Unix_Sock: Interfaces.C.Strings.chars_ptr;
+        function redisConnectUnixWithTimeout (Unix_Sock: Interfaces.C.Strings.Chars_Ptr;
                                               Timeout: Timeval) return access redisContext;
         pragma Import (C, redisConnectUnixWithTimeout, "redisConnectUnixWithTimeout");
 
-        function redisConnectUnixNonBlock (Unix_Sock : Interfaces.C.Strings.chars_ptr) return access redisContext;
+        function redisConnectUnixNonBlock (Unix_Sock : Interfaces.C.Strings.Chars_Ptr) return access redisContext;
         pragma Import (C, redisConnectUnixNonBlock, "redisConnectUnixNonBlock");
 
         function redisSetTimeout (Context : access redisContext;
@@ -169,9 +174,14 @@ package Redis is
         procedure redisFree (Context : access redisContext);
         pragma Import (C, redisFree, "redisFree");
 
-        function redisCommand (Context : access redisContext;
-                                Format : Interfaces.C.Strings.chars_ptr)
-                                return System.Address;
-        pragma Import (C, redisCommand, "redisCommand");
+        function redisCommandArgv (Context : access redisContext;
+            Arg_Count : Int;
+            Argv : access Interfaces.C.Strings.Chars_Ptr;
+            Argv_Length : access Size_Type) return System.Address;
+        pragma Import (C, redisCommandArgv, "redisCommandArgv");
     end Hiredis;
+
+    type Connection is tagged record
+        Context : access Hiredis.redisContext;
+    end record;
 end Redis;

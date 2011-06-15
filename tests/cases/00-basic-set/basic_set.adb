@@ -10,6 +10,7 @@ use Ada.Text_IO;
 
 procedure Basic_Set is
   package CLI renames Ada.Command_Line;
+  Conn : Redis.Connection;
 begin
     if CLI.Argument_Count /= 2 then
       Put_Line (">> I require *TWO* arguments: key value");
@@ -17,10 +18,10 @@ begin
       return;
     end if;
 
-
     declare
     begin
-        Redis.Set ("simplekey", "simplevalue");
+        Redis.Connect ("localhost", 6379, Conn);
+        Redis.Set (Conn, "simplekey", "simplevalue");
     exception
         when Error: others =>
             CLI.Set_Exit_Status (1);
