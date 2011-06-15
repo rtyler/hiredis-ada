@@ -21,7 +21,7 @@ begin
     declare
     begin
         Redis.Connect ("localhost", 6379, Conn);
-        Redis.Set (Conn, "simplekey", "simplevalue");
+        Conn.Set ("simplekey", "simplevalue");
     exception
         when Error: others =>
             CLI.Set_Exit_Status (1);
