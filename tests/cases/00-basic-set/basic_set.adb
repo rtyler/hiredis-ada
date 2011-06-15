@@ -6,11 +6,11 @@ with Ada.Command_Line,
      Ada.Text_IO,
      Redis;
 
-use Ada.Text_IO;
-
 procedure Basic_Set is
-  package CLI renames Ada.Command_Line;
-  Conn : Redis.Connection;
+    use Ada.Text_IO;
+
+    package CLI renames Ada.Command_Line;
+    Conn : Redis.Connection;
 begin
     if CLI.Argument_Count /= 2 then
       Put_Line (">> I require *TWO* arguments: key value");
