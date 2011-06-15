@@ -44,7 +44,7 @@ kill_redis() {
   greenout "Killing redis-server on pid: ${REDIS_PID}"
   kill ${REDIS_PID}
   while [ $RUNNING -ne 0 ]; do
-    ps -eo pid | grep "${REDIS_PID}" > /dev/null
+    ps -eo pid | grep "^${REDIS_PID}$$" > /dev/null
     if [ $? -ne 0 ]; then
       RUNNING=0
     fi
@@ -55,11 +55,11 @@ kill_redis() {
 start_redis() {
   trap kill_redis INT QUIT TERM EXIT
   redis-server - <<EOF
-  loglevel warning
+  loglevel debug
   daemonize yes
-  pidfile "$REDIS_PIDFILE"
+  pidfile ${REDIS_PIDFILE}
 EOF
-  greenout "redis-server started with pid: ${REDIS_PID}"
+  greenout "redis-server started with pid: $(cat $REDIS_PIDFILE)"
 }
 
 
