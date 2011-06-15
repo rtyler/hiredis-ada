@@ -1,0 +1,17 @@
+### Pre-processor defines here
+#define KV_CMD(cmd) function cmd (C : access Hiredis.redisContext;\
+                                  Key  : Interfaces.C.Strings.Chars_Ptr; \
+                                  Value : Interfaces.C.Strings.Chars_Ptr) return System.Address; \
+        pragma Import (C, cmd, "wrapped" & #cmd);
+----------------------------------------------------------
+with Interfaces.C.Strings,
+     Redis;
+
+
+package Redis.Shim is
+
+
+    KV_CMD(SET)
+
+
+end Redis.Shim;

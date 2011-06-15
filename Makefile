@@ -16,6 +16,11 @@ release: pre
 pre:
 	mkdir -p build
 	mkdir -p obj/tests
+	@echo
+	@echo "===> Building redis-shim.ads"
+	cpp src/redis-shim.ads.in | tail -n +10 > src/redis-shim.ads
+	@echo
+
 
 syntax: pre
 	gnatmake -gnatc -gnat05 -P hiredis.gpr
