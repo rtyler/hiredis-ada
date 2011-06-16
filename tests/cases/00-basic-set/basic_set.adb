@@ -12,12 +12,6 @@ procedure Basic_Set is
     package CLI renames Ada.Command_Line;
     Conn : Redis.Connection;
 begin
-    if CLI.Argument_Count /= 2 then
-      Put_Line (">> I require *TWO* arguments: key value");
-      CLI.Set_Exit_Status (1);
-      return;
-    end if;
-
     declare
     begin
         Redis.Connect ("localhost", 6379, Conn);

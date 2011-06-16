@@ -20,32 +20,37 @@ for d in $(find tests/cases -type d); do
     if [ "$d" = "tests/cases" ]; then
         continue
     fi
-    greenout "Starting test case: \"${d}\""
 
-    SCRIPT="${d}/test.sh"
+    testname=$(echo $d | cut -d / -f 3)
+    execname=$(echo $d | cut -d - -f 2- | sed 's/-/_/')
+    greenout "Starting test case: \"${testname}\""
 
-    test -e $SCRIPT
+    cat > tmptest.sh <<EOF
+#!/bin/sh
+source "tests/functions.sh"
+cd ${d}
+start_redis
+runcommand ./${execname}
+runcommand ruby check.rb
+EOF
 
-    if [ $? -ne 0 ]; then
-        redout "Could not find the test script \"${SCRIPT}\""
-        exit 1
-    fi
-
-    sh $SCRIPT
+    sh tmptest.sh
 
     case $? in
         2 | 3)
-            echo $SCRIPT >> $SKIPFILE
+            echo $testname>> $SKIPFILE
             ;;
             0)
-            echo $SCRIPT >> $PASSFILE
+            echo $testname >> $PASSFILE
             ;;
             *)
             # Anything that isn't zero, 2 or 3, probably is fail
-            echo $SCRIPT >> $FAILFILE
+            echo $testname >> $FAILFILE
             ;;
     esac
 done
+
+rm -f tmptest.sh
 
 greenout "Completed running tests"
 
