@@ -16,7 +16,13 @@ package Redis is
 
     procedure Set (C : Connection; Key : in String; Value : in String);
 
+    procedure Incr (C : Connection; Key : in String);
+    procedure Increment (C : Connection; Key : in String);
+    procedure IncrBy (C : Connection; Key : in String; Value : in Integer);
+    procedure Increment_By (C : Connection; Key : in String; Value : in Integer);
+
     procedure Connect (Host : in String; Port : in Port_Type; Conn : out Connection);
+
 private
     package Hiredis is
         REDIS_ERR : constant := -1;

@@ -19,18 +19,55 @@ package body Redis is
 
     procedure Set (C : in Redis.Connection; Key : in String; Value : in String) is
         Unused : System.Address;
-
-        Argc : aliased Int := 3;
         Argv : array (0 .. 2) of aliased Chars_Ptr;
     begin
         Argv (0) := New_String ("SET");
         Argv (1) := New_String (Key);
         Argv (2) := New_String (Value);
 
-        Unused := Hiredis.redisCommandArgv (C.Context, Argc, Argv (0)'Access, null);
+        Unused := Hiredis.redisCommandArgv (C.Context, Argv'Length, Argv (0)'Access, null);
 
         for Index in Argv'Range loop
             Free (Argv (Index));
         end loop;
     end Set;
+
+    procedure Incr (C : Connection; Key : in String) is
+    begin
+        Increment (C, Key);
+    end Incr;
+
+    procedure Increment (C : Connection; Key : in String) is
+        Unused : System.Address;
+        Argv : array (0 .. 1) of aliased Chars_Ptr;
+    begin
+        Argv (0) := New_String ("INCR");
+        Argv (1) := New_String (Key);
+
+        Unused := Hiredis.redisCommandArgv (C.Context, Argv'Length, Argv (0)'Access, null);
+
+        for Index in Argv'Range loop
+            Free (Argv (Index));
+        end loop;
+    end Increment;
+
+    procedure IncrBy (C : Connection; Key : in String; Value : in Integer) is
+    begin
+        Increment_By (C, Key, Value);
+    end IncrBy;
+
+    procedure Increment_By (C : Connection; Key : in String; Value : in Integer) is
+        Unused : System.Address;
+        Argv : array (0 .. 2) of aliased Chars_Ptr;
+    begin
+        Argv (0) := New_String ("INCRBY");
+        Argv (1) := New_String (Key);
+        Argv (2) := New_String (Integer'Image (Value));
+
+        Unused := Hiredis.redisCommandArgv (C.Context, Argv'Length, Argv (0)'Access, null);
+
+        for Index in Argv'Range loop
+            Free (Argv (Index));
+        end loop;
+    end Increment_By;
 end Redis;
