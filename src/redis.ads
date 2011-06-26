@@ -186,15 +186,22 @@ private
         procedure redisFree (Context : access redisContext);
         pragma Import (C, redisFree, "redisFree");
 
+        type Command_Array is array (Integer range <>) of Interfaces.C.Strings.Chars_Ptr;
+        pragma Convention (C, Command_Array);
+
         function redisCommandArgv (Context : access redisContext;
             Arg_Count : Int;
-            Argv : access Interfaces.C.Strings.Chars_Ptr;
+            Argv : Command_Array;
             Argv_Length : access Size_Type) return System.Address;
-        pragma Import (C, redisCommandArgv, "redisCommandArgv");
+        pragma Import (C, redisCommandArgv2, "redisCommandArgv");
     end Hiredis;
 
 
     type Connection is tagged record
         Context : access Hiredis.redisContext;
     end record;
+
+    procedure Execute (C : in Connection;
+                       Commands : in out Hiredis.Command_Array;
+                       Reply : out System.Address);
 end Redis;

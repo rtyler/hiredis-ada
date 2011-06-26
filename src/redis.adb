@@ -19,17 +19,13 @@ package body Redis is
 
     procedure Set (C : in Redis.Connection; Key : in String; Value : in String) is
         Unused : System.Address;
-        Argv : array (0 .. 2) of aliased Chars_Ptr;
+        Argv : Hiredis.Command_Array (0 .. 2);
     begin
         Argv (0) := SET_CMD;
         Argv (1) := New_String (Key);
         Argv (2) := New_String (Value);
 
-        Unused := Hiredis.redisCommandArgv (C.Context, Argv'Length, Argv (0)'Access, null);
-
-        for Index in Argv'Range loop
-            Free (Argv (Index));
-        end loop;
+        Execute (C, Argv, Unused);
     end Set;
 
     procedure Incr (C : Connection; Key : in String) is
@@ -39,16 +35,12 @@ package body Redis is
 
     procedure Increment (C : Connection; Key : in String) is
         Unused : System.Address;
-        Argv : array (0 .. 1) of aliased Chars_Ptr;
+        Argv : Hiredis.Command_Array (0 .. 1);
     begin
         Argv (0) := INCR_CMD;
         Argv (1) := New_String (Key);
 
-        Unused := Hiredis.redisCommandArgv (C.Context, Argv'Length, Argv (0)'Access, null);
-
-        for Index in Argv'Range loop
-            Free (Argv (Index));
-        end loop;
+        Execute (C, Argv, Unused);
     end Increment;
 
     procedure IncrBy (C : Connection; Key : in String; Value : in Integer) is
@@ -58,16 +50,24 @@ package body Redis is
 
     procedure Increment_By (C : Connection; Key : in String; Value : in Integer) is
         Unused : System.Address;
-        Argv : array (0 .. 2) of aliased Chars_Ptr;
+        Argv : Hiredis.Command_Array (0 .. 2);
     begin
         Argv (0) := INCRBY_CMD;
         Argv (1) := New_String (Key);
         Argv (2) := New_String (Integer'Image (Value));
 
-        Unused := Hiredis.redisCommandArgv (C.Context, Argv'Length, Argv (0)'Access, null);
-
-        for Index in Argv'Range loop
-            Free (Argv (Index));
-        end loop;
+        Execute (C, Argv, Unused);
     end Increment_By;
+
+    procedure Execute (C : in Connection;
+                       Commands : in out Hiredis.Command_Array;
+                       Reply : out System.Address) is
+    begin
+        Reply := Hiredis.redisCommandArgv2 (C.Context, Commands'Length, Commands, null);
+
+
+        for Index in Commands'Range loop
+            Free (Commands (Index));
+        end loop;
+    end Execute;
 end Redis;
