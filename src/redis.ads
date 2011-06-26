@@ -193,7 +193,7 @@ private
             Arg_Count : Int;
             Argv : Command_Array;
             Argv_Length : access Size_Type) return System.Address;
-        pragma Import (C, redisCommandArgv2, "redisCommandArgv");
+        pragma Import (C, redisCommandArgv, "redisCommandArgv");
     end Hiredis;
 
 

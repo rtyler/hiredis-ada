@@ -63,7 +63,7 @@ package body Redis is
                        Commands : in out Hiredis.Command_Array;
                        Reply : out System.Address) is
     begin
-        Reply := Hiredis.redisCommandArgv2 (C.Context, Commands'Length, Commands, null);
+        Reply := Hiredis.redisCommandArgv (C.Context, Commands'Length, Commands, null);
 
 
         for Index in Commands'Range loop
