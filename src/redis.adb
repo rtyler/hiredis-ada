@@ -21,7 +21,7 @@ package body Redis is
         Unused : System.Address;
         Argv : array (0 .. 2) of aliased Chars_Ptr;
     begin
-        Argv (0) := New_String ("SET");
+        Argv (0) := SET_CMD;
         Argv (1) := New_String (Key);
         Argv (2) := New_String (Value);
 
@@ -41,7 +41,7 @@ package body Redis is
         Unused : System.Address;
         Argv : array (0 .. 1) of aliased Chars_Ptr;
     begin
-        Argv (0) := New_String ("INCR");
+        Argv (0) := INCR_CMD;
         Argv (1) := New_String (Key);
 
         Unused := Hiredis.redisCommandArgv (C.Context, Argv'Length, Argv (0)'Access, null);
@@ -60,7 +60,7 @@ package body Redis is
         Unused : System.Address;
         Argv : array (0 .. 2) of aliased Chars_Ptr;
     begin
-        Argv (0) := New_String ("INCRBY");
+        Argv (0) := INCRBY_CMD;
         Argv (1) := New_String (Key);
         Argv (2) := New_String (Integer'Image (Value));
 

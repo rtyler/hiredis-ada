@@ -24,6 +24,12 @@ package Redis is
     procedure Connect (Host : in String; Port : in Port_Type; Conn : out Connection);
 
 private
+    use Interfaces.C.Strings;
+
+    SET_CMD : constant Chars_Ptr := New_String ("SET");
+    INCR_CMD : constant Chars_Ptr := New_String ("INCR");
+    INCRBY_CMD : constant Chars_Ptr := New_String ("INCRBY");
+
     package Hiredis is
         REDIS_ERR : constant := -1;
         REDIS_OK : constant := 0;
@@ -186,6 +192,7 @@ private
             Argv_Length : access Size_Type) return System.Address;
         pragma Import (C, redisCommandArgv, "redisCommandArgv");
     end Hiredis;
+
 
     type Connection is tagged record
         Context : access Hiredis.redisContext;
