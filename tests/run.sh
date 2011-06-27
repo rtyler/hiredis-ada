@@ -30,6 +30,9 @@ for d in $(find tests/cases -type d); do
 source "tests/functions.sh"
 cd ${d}
 start_redis
+if [ -f "pre.rb" ]; then
+    runcommand ruby pre.rb
+fi
 runcommand ./${execname}
 runcommand ruby check.rb
 EOF
