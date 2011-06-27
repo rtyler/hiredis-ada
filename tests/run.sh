@@ -16,7 +16,7 @@ FAILFILE="testresults.$$.fail.log"
 PASSFILE="testresults.$$.pass.log"
 
 ## Start running through all our test cases
-for d in $(find tests/cases -type d); do
+for d in $(find tests/cases -type d | sort); do
     if [ "$d" = "tests/cases" ]; then
         continue
     fi
