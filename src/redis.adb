@@ -117,7 +117,7 @@ package body Redis is
         Reply := Hiredis.redisCommandArgv (C.Context, Commands'Length, Commands, null);
 
 
-        for Index in Commands'Range loop
+        for Index in 1 .. (Commands'Length - 1) loop
             Free (Commands (Index));
         end loop;
     end Execute;
