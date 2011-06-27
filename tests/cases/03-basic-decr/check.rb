@@ -7,7 +7,7 @@ r = Redis.new
 rc = r.get("simplekey")
 
 if rc != '9' then
-  puts "Redis returned \"#{rc}\" and I expected \"1\""
+  puts "Redis returned \"#{rc}\" and I expected \"9\""
   exit 1
 end
 
