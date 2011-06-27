@@ -98,7 +98,7 @@ package body Redis is
         Unused : System.Address;
         Argv : Hiredis.Command_Array (0 .. 2);
     begin
-        Argv (0) := DECR_CMD;
+        Argv (0) := DECRBY_CMD;
         Argv (1) := New_String (Key);
         Argv (2) := New_String (Integer'Image (Value));
 
