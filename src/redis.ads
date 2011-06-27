@@ -18,8 +18,15 @@ package Redis is
 
     procedure Incr (C : Connection; Key : in String);
     procedure Increment (C : Connection; Key : in String);
+
     procedure IncrBy (C : Connection; Key : in String; Value : in Integer);
     procedure Increment_By (C : Connection; Key : in String; Value : in Integer);
+
+    procedure Decr (C : Connection; Key : in String);
+    procedure Decrement (C : Connection; Key : in String);
+
+    procedure DecrBy (C : Connection; Key : in String; Value : in Integer);
+    procedure Decrement_By (C : Connection; Key : in String; Value : in Integer);
 
     procedure Connect (Host : in String; Port : in Port_Type; Conn : out Connection);
 
@@ -29,6 +36,8 @@ private
     SET_CMD : constant Chars_Ptr := New_String ("SET");
     INCR_CMD : constant Chars_Ptr := New_String ("INCR");
     INCRBY_CMD : constant Chars_Ptr := New_String ("INCRBY");
+    DECR_CMD : constant Chars_Ptr := New_String ("DECR");
+    DECRBY_CMD : constant Chars_Ptr := New_String ("DECRBY");
 
     package Hiredis is
         REDIS_ERR : constant := -1;

@@ -17,6 +17,9 @@ package body Redis is
         Free (Host_Ptr);
     end Connect;
 
+    -------------------------------------------------------
+    --
+    -------------------------------------------------------
     procedure Set (C : in Redis.Connection; Key : in String; Value : in String) is
         Unused : System.Address;
         Argv : Hiredis.Command_Array (0 .. 2);
@@ -27,6 +30,10 @@ package body Redis is
 
         Execute (C, Argv, Unused);
     end Set;
+
+    -------------------------------------------------------
+    --
+    -------------------------------------------------------
 
     procedure Incr (C : Connection; Key : in String) is
     begin
@@ -43,6 +50,10 @@ package body Redis is
         Execute (C, Argv, Unused);
     end Increment;
 
+    -------------------------------------------------------
+    --
+    -------------------------------------------------------
+
     procedure IncrBy (C : Connection; Key : in String; Value : in Integer) is
     begin
         Increment_By (C, Key, Value);
@@ -58,6 +69,46 @@ package body Redis is
 
         Execute (C, Argv, Unused);
     end Increment_By;
+
+    -------------------------------------------------------
+    --
+    -------------------------------------------------------
+
+    procedure Decr (C : Connection; Key : in String) is
+    begin
+        Decrement (C, Key);
+    end Decr;
+
+    procedure Decrement (C : Connection; Key : in String) is
+        Unused : System.Address;
+        Argv : Hiredis.Command_Array (0 .. 1);
+    begin
+        Argv (0) := DECR_CMD;
+        Argv (1) := New_String (Key);
+
+        Execute (C, Argv, Unused);
+    end Decrement;
+
+    procedure DecrBy (C : Connection; Key : in String; Value : in Integer) is
+    begin
+        Decrement_By (C, Key, Value);
+    end DecrBy;
+
+    procedure Decrement_By (C : Connection; Key : in String; Value : in Integer) is
+        Unused : System.Address;
+        Argv : Hiredis.Command_Array (0 .. 2);
+    begin
+        Argv (0) := DECR_CMD;
+        Argv (1) := New_String (Key);
+        Argv (2) := New_String (Integer'Image (Value));
+
+        Execute (C, Argv, Unused);
+    end Decrement_By;
+
+
+    -------------------------------------------------------
+    --  Private procedures and functions
+    -------------------------------------------------------
 
     procedure Execute (C : in Connection;
                        Commands : in out Hiredis.Command_Array;
