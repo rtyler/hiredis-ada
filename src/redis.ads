@@ -2,7 +2,8 @@
 --  Primary library for Interfacing with hiredis
 --
 
-with Interfaces.C,
+with Ada.Strings.Unbounded,
+     Interfaces.C,
      Interfaces.C.Strings,
      System;
 
@@ -11,10 +12,19 @@ package Redis is
     use System;
 
     subtype Port_Type is Natural range 1 .. 65536;
+    type Reply_Kind is (Numeric_Reply, String_Reply, Error_Reply);
+
+    type Reply is record
+        Kind         : Reply_Kind;
+        Numeric_Value : Integer;
+        String_Value : Ada.Strings.Unbounded.Unbounded_String;
+    end record;
 
     type Connection is tagged private;
 
     procedure Set (C : Connection; Key : in String; Value : in String);
+
+    procedure Get (C : Connection; Key : in String; Value : out Reply);
 
     procedure Incr (C : Connection; Key : in String);
     procedure Increment (C : Connection; Key : in String);
@@ -33,6 +43,7 @@ package Redis is
 private
     use Interfaces.C.Strings;
 
+    GET_CMD : constant Chars_Ptr := New_String ("GET");
     SET_CMD : constant Chars_Ptr := New_String ("SET");
     INCR_CMD : constant Chars_Ptr := New_String ("INCR");
     INCRBY_CMD : constant Chars_Ptr := New_String ("INCRBY");
@@ -92,14 +103,15 @@ private
         pragma Convention (C_Pass_By_Copy, Timeval);
 
         type redisReply is record
-            c_type : aliased Int;
+            C_Type : aliased Int;
             Integer : aliased Long_Long_Integer;
-            len : aliased Int;
-            str : Interfaces.C.Strings.chars_ptr;
-            elements : aliased Size_Type;
-            element : System.Address;
+            Len : aliased Int;
+            Str : Interfaces.C.Strings.Chars_Ptr;
+            Elements : aliased Size_Type;
+            Element : System.Address;
         end record;
-        pragma Convention (C_Pass_By_Copy, redisReply);
+        pragma Convention (C, redisReply);
+        type redisReplyPtr is access redisReply;
 
         type redisReadTask is record
             poff : aliased Size_Type;
@@ -201,7 +213,7 @@ private
         function redisCommandArgv (Context : access redisContext;
             Arg_Count : Int;
             Argv : Command_Array;
-            Argv_Length : access Size_Type) return System.Address;
+            Argv_Length : access Size_Type) return redisReplyPtr;
         pragma Import (C, redisCommandArgv, "redisCommandArgv");
     end Hiredis;
 
@@ -212,5 +224,5 @@ private
 
     procedure Execute (C : in Connection;
                        Commands : in out Hiredis.Command_Array;
-                       Reply : out System.Address);
+                       Reply : out Hiredis.redisReplyPtr);
 end Redis;
