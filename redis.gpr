@@ -18,9 +18,9 @@ Library project hiredis is
     package Compiler is
         case Mode is
             when "debug" =>
-                for Switches ("Ada") use ("-g", "-gnat05");
+                for Switches ("Ada") use ("-g", "-gnat12");
             when "release" =>
-                for Switches ("Ada") use ("-O2", "-gnat05");
+                for Switches ("Ada") use ("-O2", "-gnat12");
         end case;
     end Compiler;
 end hiredis;
